@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherSphere - Smart Weather Forecast App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="weather-bg-clouds">
+    <div class="page-shell">
+        <header class="site-header">
+            <nav class="navbar" aria-label="Main navigation">
+                <a class="brand" href="#home" aria-label="WeatherSphere home">
+                    <span class="brand-icon"><i class="fa-solid fa-cloud-sun"></i></span>
+                    <span>WeatherSphere</span>
+                </a>
+
+                <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation menu" aria-expanded="false">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <div class="nav-links" id="navLinks">
+                    <a href="#home">Home</a>
+                    <a href="#forecast">Forecast</a>
+                    <a href="#hourly">Hourly</a>
+                    <a href="#charts">Charts</a>
+                </div>
+
+                <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode">
+                    <i class="fa-solid fa-moon"></i>
+                    <span>Dark</span>
+                </button>
+            </nav>
+        </header>
+
+        <main>
+            <section class="hero" id="home">
+                <div class="hero-content">
+                    <p class="eyebrow">Smart Weather Forecast App</p>
+                    <h1>Live weather insights for every city.</h1>
+                    <p class="hero-text">
+                        Search an Indian city or use your current location to explore real-time conditions, hourly trends,
+                        and a 5-day forecast with clean, portfolio-ready weather visuals.
+                    </p>
+
+                    <form class="search-panel glass-card" id="searchForm">
+                        <label class="sr-only" for="cityInput">Enter city name</label>
+                        <div class="search-input-wrap">
+                            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                            <input id="cityInput" type="search" list="indianCityList" placeholder="Search Indian city" autocomplete="off" required>
+                            <datalist id="indianCityList"></datalist>
+                        </div>
+                        <button class="primary-btn" type="submit">
+                            <i class="fa-solid fa-location-arrow"></i>
+                            Search
+                        </button>
+                        <button class="secondary-btn" id="locationBtn" type="button">
+                            <i class="fa-solid fa-crosshairs"></i>
+                            Current Location
+                        </button>
+                    </form>
+
+                    <div class="quick-controls">
+                        <div class="unit-switch" aria-label="Temperature unit switch">
+                            <button class="unit-btn active" type="button" data-unit="metric">&deg;C</button>
+                            <button class="unit-btn" type="button" data-unit="imperial">&deg;F</button>
+                        </div>
+                        <p id="apiNotice">Live data via Open-Meteo</p>
+                    </div>
+
+                    <div class="city-picker glass-card" aria-label="Indian city shortcuts">
+                        <div class="city-picker-header">
+                            <strong>Indian Cities</strong>
+                            <span id="cityCount">0 cities</span>
+                        </div>
+                        <div class="city-chips" id="cityChips"></div>
+                    </div>
+                </div>
+
+                <aside class="current-weather glass-card" aria-live="polite">
+                    <div class="loading-overlay hidden" id="loadingOverlay">
+                        <div class="loader"></div>
+                        <span>Fetching weather...</span>
+                    </div>
+
+                    <div class="weather-topline">
+                        <div>
+                            <p class="section-kicker">Current Weather</p>
+                            <h2 id="cityName">New Delhi</h2>
+                            <p id="currentDate">Monday, June 15</p>
+                        </div>
+                        <i id="weatherIcon" class="fa-solid fa-cloud-sun" aria-hidden="true"></i>
+                    </div>
+
+                    <div class="temperature-row">
+                        <span id="temperature">32</span>
+                        <span id="temperatureUnit">C</span>
+                    </div>
+
+                    <p class="condition" id="weatherCondition">Partly cloudy</p>
+
+                    <div class="weather-metrics">
+                        <article>
+                            <i class="fa-solid fa-temperature-half"></i>
+                            <span>Feels Like</span>
+                            <strong id="feelsLike">35 C</strong>
+                        </article>
+                        <article>
+                            <i class="fa-solid fa-droplet"></i>
+                            <span>Humidity</span>
+                            <strong id="humidity">48%</strong>
+                        </article>
+                        <article>
+                            <i class="fa-solid fa-wind"></i>
+                            <span>Wind</span>
+                            <strong id="windSpeed">12 km/h</strong>
+                        </article>
+                        <article>
+                            <i class="fa-solid fa-sun"></i>
+                            <span>Sunrise</span>
+                            <strong id="sunrise">05:24</strong>
+                        </article>
+                        <article>
+                            <i class="fa-solid fa-moon"></i>
+                            <span>Sunset</span>
+                            <strong id="sunset">19:18</strong>
+                        </article>
+                    </div>
+                </aside>
+            </section>
+
+            <p class="error-message hidden" id="errorMessage" role="alert"></p>
+
+            <section class="content-grid">
+                <div class="forecast-section glass-card" id="forecast">
+                    <div class="section-heading">
+                        <div>
+                            <p class="section-kicker">Next 5 Days</p>
+                            <h2>Forecast</h2>
+                        </div>
+                    </div>
+                    <div class="forecast-grid" id="forecastGrid"></div>
+                </div>
+
+                <div class="highlights glass-card">
+                    <div class="section-heading">
+                        <div>
+                            <p class="section-kicker">Atmosphere</p>
+                            <h2>Weather Highlights</h2>
+                        </div>
+                    </div>
+                    <div class="highlight-list">
+                        <article>
+                            <span>Visibility</span>
+                            <strong id="visibility">7.2 km</strong>
+                        </article>
+                        <article>
+                            <span>Pressure</span>
+                            <strong id="pressure">1008 hPa</strong>
+                        </article>
+                        <article>
+                            <span>Cloudiness</span>
+                            <strong id="cloudiness">38%</strong>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <section class="hourly-section glass-card" id="hourly">
+                <div class="section-heading">
+                    <div>
+                        <p class="section-kicker">Today</p>
+                        <h2>Hourly Forecast</h2>
+                    </div>
+                </div>
+                <div class="hourly-scroll" id="hourlyCards"></div>
+            </section>
+
+            <section class="chart-section glass-card" id="charts">
+                <div class="section-heading">
+                    <div>
+                        <p class="section-kicker">Temperature Trend</p>
+                        <h2>5-Day Chart</h2>
+                    </div>
+                </div>
+                <div class="chart-wrap">
+                    <canvas id="forecastChart" aria-label="5-day temperature forecast chart"></canvas>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
